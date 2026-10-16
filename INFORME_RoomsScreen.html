@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.12.1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Informe — Rediseño de RoomsScreen</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="estilo.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Informe — Rediseño de RoomsScreen</h1>
+</header>
+<h1 id="informe-breve-de-diagnóstico-y-mejora">Informe breve de
+diagnóstico y mejora</h1>
+<h2 id="de-comprender-el-código-a-transformar-la-experiencia">De
+comprender el código a transformar la experiencia</h2>
+<p><strong>Actividad:</strong> Rediseño de una pantalla de Hotel
+Cartagena con Flutter <strong>Pantalla asignada:</strong>
+<code>lib/screens/rooms_screen.dart</code> — <code>RoomsScreen</code>
+(RF03: consultar habitaciones disponibles) <strong>Asignatura:</strong>
+Electiva II · Dart y Flutter</p>
+<hr />
+<h2 id="propósito-de-la-pantalla">1. Propósito de la pantalla</h2>
+<p><code>RoomsScreen</code> permite al recepcionista <strong>ver qué
+habitaciones están disponibles</strong> y <strong>elegir una para
+reservar</strong>. Agrupa las habitaciones disponibles por tipo
+(Sencilla, Doble, Suite) y muestra su capacidad. Es el punto de partida
+natural para la acción de reservar (RF04/RF05).</p>
+<hr />
+<h2 id="diagnóstico-de-la-versión-original">2. Diagnóstico de la versión
+original</h2>
+<p>Se analizó el código original (<code>rooms_screen.dart</code>,
+versión del repositorio base) y se identificaron <strong>6 oportunidades
+de mejora</strong>.</p>
+<table>
+<colgroup>
+<col style="width: 3%" />
+<col style="width: 22%" />
+<col style="width: 26%" />
+<col style="width: 34%" />
+<col style="width: 12%" />
+</colgroup>
+<thead>
+<tr>
+<th>#</th>
+<th>Elemento observado</th>
+<th>Problema u oportunidad</th>
+<th>Consecuencia para el usuario</th>
+<th>Evidencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P1</td>
+<td>Chip de estado (<code>_EstadoChip</code>)</td>
+<td>El chip siempre dice “Disponible” en verde</td>
+<td>Ruido visual: ocupa espacio sin aportar información</td>
+<td><code>_EstadoChip</code> (líneas 75–92); solo se listan disponibles
+(<code>consultarDisponiblesAgrupadas()</code>)</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>Filas de habitación (<code>ListTile</code>)</td>
+<td>No llevan a ninguna acción</td>
+<td>Para reservar hay que volver al menú, entrar a Reservar y escribir
+el número de memoria: riesgo de error y pérdida de tiempo</td>
+<td><code>ListTile</code> sin <code>onTap</code> ni botones (líneas
+53–59)</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>Capacidad</td>
+<td>No ayuda a elegir según el número de huéspedes</td>
+<td>Con un grupo de 3, el recepcionista debe deducir que solo sirve una
+Suite</td>
+<td>La capacidad solo aparece como texto en el <code>subtitle</code>
+(líneas 56–57)</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>Listado</td>
+<td>No hay panorama general del hotel</td>
+<td>Con “0 disponibles” no se sabe si el hotel está lleno o qué está
+reservado/ocupado</td>
+<td>Solo se muestran disponibles; no hay totales
+(<code>hotel.dart</code>,
+<code>consultarDisponiblesAgrupadas</code>)</td>
+</tr>
+<tr>
+<td>P5</td>
+<td>Estado de la pantalla</td>
+<td>Los datos pueden quedar desactualizados</td>
+<td>Si se vuelve a la pantalla desde otra, no se refresca y no hay forma
+de actualizar</td>
+<td><code>RoomsScreen</code> es <code>StatelessWidget</code>, sin
+<code>RefreshIndicator</code> (línea 14)</td>
+</tr>
+<tr>
+<td>P6</td>
+<td>Textos</td>
+<td>Textos poco naturales y estado vacío sin orientación</td>
+<td>Lectura menos clara (“disponible(s)”, “persona(s)”); el aviso vacío
+no sugiere qué hacer</td>
+<td>Cadenas en el <code>title</code> del <code>ExpansionTile</code>
+(línea 42) y en el <code>ListTile</code> de aviso (línea 49)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>¿Por qué merecen atención?</strong> Cada una afecta
+directamente la tarea del usuario (encontrar y reservar rápido, sin
+equivocarse), que es el propósito de la pantalla.</p>
+<hr />
+<h2 id="mejoras-priorizadas">3. Mejoras priorizadas</h2>
+<table>
+<colgroup>
+<col style="width: 3%" />
+<col style="width: 26%" />
+<col style="width: 20%" />
+<col style="width: 23%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>#</th>
+<th>Problema que resuelve</th>
+<th>Mejora propuesta</th>
+<th>Beneficio esperado</th>
+<th>Forma de comprobarla</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>M1</td>
+<td>P2</td>
+<td>Botón <strong>Reservar</strong> en cada habitación que abre
+<code>ReserveScreen</code> con el número precargado</td>
+<td>Menos pasos y cero errores al digitar el número</td>
+<td>Reservar desde la lista sin escribir el número; contar toques
+antes/después</td>
+</tr>
+<tr>
+<td>M2</td>
+<td>P3</td>
+<td>Filtro <strong>“¿Cuántas personas?”</strong> (1 · 2 · 3–4)</td>
+<td>Ver solo habitaciones que sirven al huésped</td>
+<td>Seleccionar “3–4” y verificar que solo aparecen Suites</td>
+</tr>
+<tr>
+<td>M3</td>
+<td>P4</td>
+<td><strong>Resumen superior</strong> con disponibles, reservadas y
+ocupadas</td>
+<td>Panorama del hotel de un vistazo</td>
+<td>Reservar/check-in y verificar que los contadores cambian</td>
+</tr>
+<tr>
+<td>M4</td>
+<td>P5</td>
+<td><strong>Actualización automática y manual</strong>
+(<code>StatefulWidget</code> + <code>RefreshIndicator</code>)</td>
+<td>La lista siempre refleja el estado real</td>
+<td>Reservar desde la lista y comprobar que la habitación desaparece al
+volver</td>
+</tr>
+<tr>
+<td>M5</td>
+<td>P1 y P6</td>
+<td><strong>Limpieza visual y textos</strong></td>
+<td>Pantalla más limpia y fácil de leer</td>
+<td>Comparar capturas antes/después; probar en pantalla pequeña sin
+desbordes</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="propuesta-de-diseño-boceto">4. Propuesta de diseño (boceto)</h2>
+<pre><code>┌───────────────────────────────────────────────┐
+│ Habitaciones disponibles                    ⋮ │  ← AppBar
+├───────────────────────────────────────────────┤
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐       │
+│  │  9      │  │  0      │  │  0      │       │  ← Resumen (M3)
+│  │ ✔Disp.  │  │ 📅Reser.│  │ 🛏Ocup.  │       │
+│  └─────────┘  └─────────┘  └─────────┘       │
+│                                               │
+│  ¿Cuántas personas?                           │
+│  (Todas) (1) (2) (3–4)                        │  ← Filtro (M2)
+│                                               │
+│  ▼ Sencilla (3 disponibles)                   │
+│     ┌─────────────────────────────────────┐   │
+│     │ 🚪 Habitación 101      👤 1 persona │   │
+│     │                        [ Reservar ] │   │  ← Botón (M1)
+│     └─────────────────────────────────────┘   │
+│     ...                                       │
+│  ▼ Doble (3 disponibles)                      │
+│  ▼ Suite (3 disponibles)                      │
+└───────────────────────────────────────────────┘</code></pre>
+<p><strong>Decisiones de diseño:</strong> - <strong>Jerarquía:</strong>
+el resumen va arriba (información de contexto) y el filtro justo debajo,
+antes de la lista. - <strong>Acción principal:</strong> el botón
+“Reservar” queda a la derecha de cada fila, con estilo
+<code>FilledButton.tonal</code> para no competir con el botón principal
+de confirmación de <code>ReserveScreen</code>. - <strong>Estados de
+interacción:</strong> el filtro resalta la opción elegida
+(<code>ChoiceChip.selected</code>); al volver de la reserva la lista se
+reconstruye; <code>RefreshIndicator</code> permite actualizar
+manualmente. - <strong>Estado vacío:</strong> si no hay resultados, se
+muestra un mensaje con sugerencia (“Ajusta el filtro…”). -
+<strong>Adaptabilidad:</strong> el resumen usa <code>Row</code> +
+<code>Expanded</code> (3 tarjetas que se reparten el ancho) y la lista
+usa <code>ListView</code> con <code>padding</code>, para evitar
+desbordes en pantallas angostas.</p>
+<hr />
+<h2 id="implementación-técnica">5. Implementación técnica</h2>
+<h3 id="rooms_screen.dart-pasa-a-statefulwidget">5.1
+<code>rooms_screen.dart</code> pasa a <code>StatefulWidget</code></h3>
+<p>Permite guardar el filtro seleccionado y refrescar la vista.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode dart"><code class="sourceCode dart"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> RoomsScreen <span class="kw">extends</span> StatefulWidget <span class="op">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">final</span> Hotel hotel;</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">const</span> RoomsScreen(<span class="op">{</span><span class="kw">super</span><span class="op">.</span>key<span class="op">,</span> required <span class="kw">this</span><span class="op">.</span>hotel<span class="op">}</span>);</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">@override</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  State<span class="op">&lt;</span>RoomsScreen<span class="op">&gt;</span> createState() <span class="op">=&gt;</span> _RoomsScreenState();</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="filtro-cuántas-personas-m2">5.2 Filtro “¿Cuántas personas?”
+(M2)</h3>
+<p>Solo afecta la presentación; <strong>no valida nada</strong> en
+<code>Hotel</code>.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode dart"><code class="sourceCode dart"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="at">static</span> <span class="at">const</span> _filtros <span class="op">=</span> [</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  _FiltroPersonas(<span class="st">&#39;Todas&#39;</span><span class="op">,</span> <span class="dv">1</span>)<span class="op">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  _FiltroPersonas(<span class="st">&#39;1&#39;</span><span class="op">,</span> <span class="dv">1</span>)<span class="op">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  _FiltroPersonas(<span class="st">&#39;2&#39;</span><span class="op">,</span> <span class="dv">2</span>)<span class="op">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  _FiltroPersonas(<span class="st">&#39;3–4&#39;</span><span class="op">,</span> <span class="dv">3</span>)<span class="op">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>];</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="dt">int</span> _filtroSeleccionado <span class="op">=</span> <span class="dv">0</span>;</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> _cumpleFiltro(Habitacion h<span class="op">,</span> <span class="dt">int</span> minimo) <span class="op">=&gt;</span> h<span class="op">.</span>capacidad <span class="op">&gt;=</span> minimo;</span></code></pre></div>
+<h3 id="resumen-superior-m3">5.3 Resumen superior (M3)</h3>
+<p>Lee <code>hotel.habitaciones</code> (solo lectura) y cuenta por
+estado.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode dart"><code class="sourceCode dart"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="at">final</span> disponibles <span class="op">=</span> hotel<span class="op">.</span>habitaciones<span class="op">.</span>where((h) <span class="op">=&gt;</span> h<span class="op">.</span>estaDisponible)<span class="op">.</span>length;</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">final</span> reservadas  <span class="op">=</span> hotel<span class="op">.</span>habitaciones<span class="op">.</span>where((h) <span class="op">=&gt;</span> h<span class="op">.</span>estaReservada)<span class="op">.</span>length;</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">final</span> ocupadas    <span class="op">=</span> hotel<span class="op">.</span>habitaciones<span class="op">.</span>where((h) <span class="op">=&gt;</span> h<span class="op">.</span>estaOcupada)<span class="op">.</span>length;</span></code></pre></div>
+<h3 id="botón-reservar-y-actualización-al-volver-m1-m4">5.4 Botón
+“Reservar” y actualización al volver (M1 + M4)</h3>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode dart"><code class="sourceCode dart"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dt">Future</span><span class="op">&lt;</span><span class="dt">void</span><span class="op">&gt;</span> _irAReservar(Habitacion habitacion) <span class="at">async</span> <span class="op">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">await</span> Navigator<span class="op">.</span>of(context)<span class="op">.</span>push(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    MaterialPageRoute(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>      builder<span class="op">:</span> (_) <span class="op">=&gt;</span> ReserveScreen(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        hotel<span class="op">:</span> widget<span class="op">.</span>hotel<span class="op">,</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        numeroInicial<span class="op">:</span> habitacion<span class="op">.</span>numero<span class="op">,</span> <span class="co">// precarga el número</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      )<span class="op">,</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    )<span class="op">,</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  );</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (mounted) setState(() <span class="op">{}</span>); <span class="co">// reconstruye: la habitación ya reservada desaparece</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="refreshindicator-m4">5.5 <code>RefreshIndicator</code> (M4)</h3>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode dart"><code class="sourceCode dart"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>body<span class="op">:</span> RefreshIndicator(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  onRefresh<span class="op">:</span> _refrescar<span class="op">,</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  child<span class="op">:</span> ListView(padding<span class="op">:</span> <span class="at">const</span> EdgeInsets<span class="op">.</span>all(<span class="dv">16</span>)<span class="op">,</span> children<span class="op">:</span> [ <span class="op">...</span> ])<span class="op">,</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>)<span class="op">,</span></span></code></pre></div>
+<h3 id="cambio-mínimo-fuera-de-la-pantalla-m1">5.6 Cambio mínimo fuera
+de la pantalla (M1)</h3>
+<p><code>ReserveScreen</code> recibe un parámetro opcional; si no se
+envía, se comporta igual que antes.</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode dart"><code class="sourceCode dart"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="at">const</span> ReserveScreen(<span class="op">{</span><span class="kw">super</span><span class="op">.</span>key<span class="op">,</span> required <span class="kw">this</span><span class="op">.</span>hotel<span class="op">,</span> <span class="kw">this</span><span class="op">.</span>numeroInicial<span class="op">}</span>);</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">@override</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> initState() <span class="op">{</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">super</span><span class="op">.</span>initState();</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (widget<span class="op">.</span>numeroInicial <span class="op">!=</span> <span class="cn">null</span>) <span class="op">{</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    _numeroHabitacionController<span class="op">.</span>text <span class="op">=</span> <span class="st">&#39;${widget.numeroInicial}&#39;</span>;</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">}</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="limpieza-visual-m5">5.7 Limpieza visual (M5)</h3>
+<ul>
+<li>Se eliminó <code>_EstadoChip</code>.</li>
+<li>Capacidad con ícono <code>Icons.person</code> y plural correcto
+(<code>1 persona</code> / <code>N personas</code>).</li>
+<li>Estado vacío con sugerencia.</li>
+</ul>
+<h3 id="reglas-de-negocio-conservadas">5.8 Reglas de negocio
+conservadas</h3>
+<p><strong>No se modificó <code>lib/services/hotel.dart</code>.</strong>
+La disponibilidad se sigue validando en
+<code>reservarHabitacion()</code> y la capacidad en
+<code>realizarCheckIn()</code>. El filtro y el resumen son solo de
+presentación.</p>
+<hr />
+<h2 id="pruebas-realizadas">6. Pruebas realizadas</h2>
+<h3 id="pruebas-automatizadas-flutter-test">6.1 Pruebas automatizadas
+(<code>flutter test</code>)</h3>
+<p>Se agregó <code>test/rooms_screen_test.dart</code> con 4 pruebas de
+widget. Se ejecutaron con <code>flutter test</code> y <strong>todas
+pasan (5/5, incluida la prueba original de login)</strong>.</p>
+<table>
+<colgroup>
+<col style="width: 8%" />
+<col style="width: 22%" />
+<col style="width: 38%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th>#</th>
+<th>Prueba</th>
+<th>Qué verifica</th>
+<th>Resultado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A1</td>
+<td>Muestra el resumen y el filtro</td>
+<td>Aparecen “Disponibles / Reservadas / Ocupadas”, el filtro “¿Cuántas
+personas?” y los 9 botones “Reservar”</td>
+<td><strong>Comprobado</strong></td>
+</tr>
+<tr>
+<td>A2</td>
+<td>El filtro “3–4” deja solo las Suites</td>
+<td>Aparecen 2 avisos “Sin habitaciones disponibles” y 3 botones
+“Reservar”</td>
+<td><strong>Comprobado</strong></td>
+</tr>
+<tr>
+<td>A3</td>
+<td>El botón “Reservar” abre la reserva con el número</td>
+<td>Se abre <code>ReserveScreen</code> y el campo número contiene
+“101”</td>
+<td><strong>Comprobado</strong></td>
+</tr>
+<tr>
+<td>A4</td>
+<td>El estado vacío sugiere qué hacer</td>
+<td>Con las Suites reservadas y filtro “3–4”, aparece “No hay
+habitaciones disponibles” + “Ajusta el filtro…”</td>
+<td><strong>Comprobado</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="pruebas-manuales-por-ejecutar-en-chrome">6.2 Pruebas manuales
+(por ejecutar en Chrome)</h3>
+<table>
+<colgroup>
+<col style="width: 4%" />
+<col style="width: 15%" />
+<col style="width: 11%" />
+<col style="width: 27%" />
+<col style="width: 27%" />
+<col style="width: 13%" />
+</colgroup>
+<thead>
+<tr>
+<th>#</th>
+<th>Escenario</th>
+<th>Acción</th>
+<th>Resultado esperado</th>
+<th>Resultado obtenido</th>
+<th>¿Cumple?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>M1</td>
+<td>Uso normal</td>
+<td>Filtrar por 2 personas y reservar la 104 desde la lista</td>
+<td><code>ReserveScreen</code> abre con “104”; al volver, la 104 ya no
+aparece y el resumen se actualiza</td>
+<td><em>(pendiente)</em></td>
+<td>—</td>
+</tr>
+<tr>
+<td>M2</td>
+<td>Datos incorrectos</td>
+<td>En la reserva precargada, poner 0 días</td>
+<td>El formulario y <code>Hotel</code> rechazan la reserva con mensaje
+de error</td>
+<td><em>(pendiente)</em></td>
+<td>—</td>
+</tr>
+<tr>
+<td>M3</td>
+<td>Error de negocio</td>
+<td>Reservar dos veces la misma habitación</td>
+<td><code>HotelException</code>: “La habitación X no está
+disponible.”</td>
+<td><em>(pendiente)</em></td>
+<td>—</td>
+</tr>
+<tr>
+<td>M4</td>
+<td>Otro tamaño de pantalla</td>
+<td>Ejecutar en ventana angosta (≈360 px) y ancha</td>
+<td>Sin desbordes; contenido legible</td>
+<td><em>(pendiente)</em></td>
+<td>—</td>
+</tr>
+<tr>
+<td>M5</td>
+<td>Refresco manual</td>
+<td>Arrastrar hacia abajo en la lista</td>
+<td>La vista se reconstruye sin errores</td>
+<td><em>(pendiente)</em></td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Nota de rigor académico:</strong> las pruebas A1–A4 son
+<strong>comprobadas</strong> por ejecución automática. Las M1–M5 quedan
+como <em>esperadas</em> hasta ejecutar la app en Chrome y tomar las
+capturas.</p>
+</blockquote>
+<hr />
+<h2 id="comparación-antes-después-trazabilidad">7. Comparación antes /
+después (trazabilidad)</h2>
+<table>
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 33%" />
+<col style="width: 17%" />
+<col style="width: 19%" />
+</colgroup>
+<thead>
+<tr>
+<th>Problema inicial</th>
+<th>Cambio implementado</th>
+<th>Evidencia</th>
+<th>Conclusión</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P2 — sin acción de reservar</td>
+<td>Botón “Reservar” por habitación + <code>numeroInicial</code> en
+<code>ReserveScreen</code></td>
+<td>Prueba automatizada <strong>A3</strong> (abre con “101”) + fragmento
+de código</td>
+<td><strong>Comprobado</strong></td>
+</tr>
+<tr>
+<td>P3 — no ayuda a elegir por huéspedes</td>
+<td>Filtro de personas con <code>ChoiceChip</code></td>
+<td>Prueba automatizada <strong>A2</strong> (filtro “3–4” deja 3
+Suites)</td>
+<td><strong>Comprobado</strong></td>
+</tr>
+<tr>
+<td>P4 — sin panorama general</td>
+<td>Resumen de disponibles/reservadas/ocupadas</td>
+<td>Prueba automatizada <strong>A1</strong> (aparecen los 3
+contadores)</td>
+<td><strong>Comprobado</strong></td>
+</tr>
+<tr>
+<td>P5 — datos desactualizados</td>
+<td><code>StatefulWidget</code> + <code>setState</code> al volver +
+<code>RefreshIndicator</code></td>
+<td>Código en <code>rooms_screen.dart</code> + prueba manual M1/M5
+pendiente</td>
+<td><strong>Observado</strong></td>
+</tr>
+<tr>
+<td>P1/P6 — chip redundante y textos</td>
+<td>Se quitó el chip; ícono de persona; plurales; estado vacío con
+sugerencia</td>
+<td>Pruebas automatizadas <strong>A1</strong> y <strong>A4</strong> +
+comparativa visual</td>
+<td><strong>Comprobado</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Lectura de la tabla:</strong> “Comprobado” = verificado por
+ejecución automática; “Observado” = cambio de código verificable,
+pendiente de prueba manual en Chrome.</p>
+</blockquote>
+<hr />
+<h2 id="conclusiones">8. Conclusiones</h2>
+<ul>
+<li>La mejora más significativa es <strong>M1</strong>: convierte la
+pantalla de “solo mirar” en “mirar y actuar”, eliminando el paso de
+volver al menú y escribir el número (origen de errores).</li>
+<li><strong>M2 y M3</strong> dan al recepcionista el contexto (personas
+y ocupación) para decidir más rápido.</li>
+<li><strong>M4</strong> garantiza que la información mostrada sea
+confiable.</li>
+<li><strong>M5</strong> reduce el ruido visual y mejora la
+legibilidad.</li>
+<li><strong>Aprendizaje:</strong> una mejora de interfaz no requiere
+tocar la lógica de negocio; separar presentación de reglas permite
+cambiar la experiencia sin riesgo.</li>
+<li><strong>Próxima versión:</strong> permitir ordenar por capacidad,
+mostrar el estado de reservadas/ocupadas también en la lista (con el
+chip recuperado de forma útil) y agregar una prueba de widget
+automatizada para el filtro.</li>
+</ul>
+</body>
+</html>
