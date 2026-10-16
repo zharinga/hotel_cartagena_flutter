@@ -6,6 +6,8 @@ experiencia"** (Electiva II · Dart y Flutter).
 Pantalla rediseñada: `lib/screens/rooms_screen.dart` (RF03: consultar
 habitaciones disponibles).
 
+**App desplegada:** http://sparkling-biscuit-b82c5e.netlify.app/
+
 ## Contenido
 
 | Archivo / carpeta | Descripción |
@@ -15,11 +17,6 @@ habitaciones disponibles).
 | `lib/screens/reserve_screen.dart` | Recibe `numeroInicial` opcional |
 | `lib/services/hotel.dart` | Lógica y reglas de negocio (sin cambios) |
 | `test/rooms_screen_test.dart` | Pruebas automatizadas de las mejoras |
-| `INFORME_RoomsScreen.md` | Informe breve de diagnóstico y mejora |
-| `PRESENTACION_RoomsScreen.html` | Presentación de 8 diapositivas (abrir en navegador) |
-| `PRESENTACION_RoomsScreen.md` | Guion de la presentación |
-| `evidencias/` | Capturas y registro de pruebas |
-| `INSTALACION.md` | Guía de instalación y ejecución |
 
 ## Ejecutar
 

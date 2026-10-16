@@ -46,3 +46,11 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Proyecto
+.metadata
+estilo.css
+evidencias/
+INFORME_RoomsScreen.*
+INSTALACION.md
+PRESENTACION_RoomsScreen.*
