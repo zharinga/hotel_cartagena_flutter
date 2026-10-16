@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hotel Cartagena — Rediseño RoomsScreen</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #0f172a; color: #f1f5f9; overflow: hidden; height: 100vh; }
+.slide { display: none; height: 100vh; padding: 60px 80px; flex-direction: column; justify-content: center; }
+.slide.active { display: flex; }
+h1 { font-size: 3.5rem; font-weight: 300; letter-spacing: -1px; margin-bottom: 20px; }
+h2 { font-size: 2.2rem; font-weight: 300; margin-bottom: 40px; color: #94a3b8; }
+h3 { font-size: 1.4rem; font-weight: 400; color: #38bdf8; margin-bottom: 16px; }
+p, li { font-size: 1.2rem; line-height: 1.8; color: #cbd5e1; }
+.subtitle { font-size: 1.3rem; color: #64748b; font-weight: 300; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 30px; }
+.card { background: #1e293b; border-radius: 16px; padding: 30px; border: 1px solid #334155; }
+.card h3 { color: #38bdf8; margin-bottom: 12px; }
+.card p, .card li { font-size: 1rem; }
+.card ul { list-style: none; }
+.card li::before { content: "→ "; color: #38bdf8; }
+.number { font-size: 4rem; font-weight: 200; color: #38bdf8; }
+.tag { display: inline-block; background: #1e293b; border: 1px solid #38bdf8; color: #38bdf8; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; margin: 4px; }
+.bar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: #334155; cursor: pointer; transition: background 0.3s; }
+.dot.active { background: #38bdf8; }
+.nav { position: fixed; top: 50%; transform: translateY(-50%); background: none; border: none; color: #475569; font-size: 2rem; cursor: pointer; padding: 20px; transition: color 0.3s; }
+.nav:hover { color: #38bdf8; }
+.prev { left: 20px; }
+.next { right: 20px; }
+.counter { position: fixed; bottom: 30px; right: 40px; color: #475569; font-size: 0.9rem; }
+.title-slide { text-align: center; }
+.title-slide h1 { font-size: 4rem; }
+.title-slide .subtitle { font-size: 1.5rem; }
+.meta { margin-top: 50px; font-size: 1rem; color: #64748b; }
+.highlight { color: #38bdf8; font-weight: 500; }
+</style>
+</head>
+<body>
+
+<div class="slide title-slide active">
+  <h1>Hotel Cartagena</h1>
+  <p class="subtitle">Rediseño de RoomsScreen</p>
+  <div class="meta">
+    <p>Electiva II · Dart y Flutter</p>
+    <p>De comprender el código a transformar la experiencia</p>
+  </div>
+</div>
+
+<div class="slide">
+  <h2>¿Qué es RoomsScreen?</h2>
+  <p style="max-width: 700px;">Pantalla que permite al recepcionista <span class="highlight">ver habitaciones disponibles</span> y <span class="highlight">elegir una para reservar</span>.</p>
+  <div style="margin-top: 40px;">
+    <span class="tag">RF03</span>
+    <span class="tag">Flutter</span>
+    <span class="tag">Hotelería</span>
+  </div>
+</div>
+
+<div class="slide">
+  <h2>Problemas encontrados</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Sin acción directa</h3>
+      <p>No se puede reservar desde la lista. Hay que volver al menú y escribir el número de memoria.</p>
+    </div>
+    <div class="card">
+      <h3>Sin contexto</h3>
+      <p>No hay resumen de ocupación del hotel. No se sabe si está lleno o qué hay disponible.</p>
+    </div>
+    <div class="card">
+      <h3>Sin filtro útil</h3>
+      <p>No se puede filtrar por número de huéspedes. El recepcionista adivina qué habitación sirve.</p>
+    </div>
+    <div class="card">
+      <h3>Datos desactualizados</h3>
+      <p>La pantalla no se actualiza al volver de una reserva. Información potencialmente incorrecta.</p>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <h2>Solución propuesta</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Botón Reservar</h3>
+      <p>Cada habitación tiene un botón que abre la reserva con el número precargado.</p>
+    </div>
+    <div class="card">
+      <h3>Filtro por personas</h3>
+      <p>ChoiceChips para filtrar: Todas · 1 · 2 · 3–4 personas.</p>
+    </div>
+    <div class="card">
+      <h3>Resumen superior</h3>
+      <p>Tres tarjetas con contadores de disponibles, reservadas y ocupadas.</p>
+    </div>
+    <div class="card">
+      <h3>Actualización</h3>
+      <p>StatefulWidget + RefreshIndicator para mantener la información al día.</p>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <h2>Resultado</h2>
+  <div class="card" style="max-width: 800px;">
+    <h3>Antes → Después</h3>
+    <ul style="list-style: none; padding: 0;">
+      <li>De "solo mirar" a <span class="highlight">"mirar y actuar"</span></li>
+      <li>De escribir el número a <span class="highlight">un solo toque</span></li>
+      <li>De adivinar a <span class="highlight">ver el contexto</span></li>
+      <li>De datos viejos a <span class="highlight">datos frescos</span></li>
+    </ul>
+  </div>
+</div>
+
+<div class="slide">
+  <h2>Implementación técnica</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>StatefulWidget</h3>
+      <p>Para guardar el filtro y refrescar la vista.</p>
+    </div>
+    <div class="card">
+      <h3>RefreshIndicator</h3>
+      <p>Actualización manual con gesto pull-to-refresh.</p>
+    </div>
+    <div class="card">
+      <h3>SetState al volver</h3>
+      <p>Al regresar de la reserva, la habitación reservada desaparece.</p>
+    </div>
+    <div class="card">
+      <h3>Sin tocar la lógica</h3>
+      <p>Las reglas de negocio en Hotel.service no se modificaron.</p>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <h2>Pruebas</h2>
+  <div class="grid">
+    <div class="card">
+      <div class="number">5/5</div>
+      <h3>Pruebas automatizadas</h3>
+      <p>flutter test — todas pasan</p>
+    </div>
+    <div class="card">
+      <div class="number">4</div>
+      <h3>Pruebas de widget</h3>
+      <p>RoomsScreen verificadas automáticamente</p>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <h2>Desplegado</h2>
+  <p style="font-size: 1.5rem; color: #38bdf8;">http://sparkling-biscuit-b82c5e.netlify.app/</p>
+  <div class="meta" style="margin-top: 30px;">
+    <p>Repositorio: github.com/zharinga/hotel_cartagena_flutter</p>
+  </div>
+</div>
+
+<button class="nav prev" onclick="navigate(-1)">‹</button>
+<button class="nav next" onclick="navigate(1)">›</button>
+<div class="bar" id="dots"></div>
+<div class="counter" id="counter"></div>
+
+<script>
+let current = 0;
+const slides = document.querySelectorAll('.slide');
+const dotsContainer = document.getElementById('dots');
+const counter = document.getElementById('counter');
+
+slides.forEach((_, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  dot.onclick = () => goTo(i);
+  dotsContainer.appendChild(dot);
+});
+
+function goTo(n) {
+  slides[current].classList.remove('active');
+  document.querySelectorAll('.dot')[current].classList.remove('active');
+  current = (n + slides.length) % slides.length;
+  slides[current].classList.add('active');
+  document.querySelectorAll('.dot')[current].classList.add('active');
+  counter.textContent = (current + 1) + ' / ' + slides.length;
+}
+
+function navigate(dir) { goTo(current + dir); }
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') navigate(1);
+  if (e.key === 'ArrowLeft') navigate(-1);
+});
+
+counter.textContent = '1 / ' + slides.length;
+</script>
+</body>
+</html>
