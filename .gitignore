@@ -51,6 +51,8 @@ app.*.map.json
 .metadata
 estilo.css
 evidencias/
-INFORME_RoomsScreen.*
+INFORME_RoomsScreen.docx
+INFORME_RoomsScreen.html
+INFORME_RoomsScreen.md
 INSTALACION.md
 PRESENTACION_RoomsScreen.*
